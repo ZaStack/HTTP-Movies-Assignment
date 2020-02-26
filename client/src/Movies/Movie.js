@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useRouteMatch } from 'react-router-dom';
+import { useRouteMatch, Link, useParams } from 'react-router-dom';
 import MovieCard from './MovieCard';
+import { Button } from '@material-ui/core';
 
 function Movie({ addToSavedList }) {
   const [movie, setMovie] = useState(null);
   const match = useRouteMatch();
+  const { id } = useParams();
 
   const fetchMovie = id => {
     axios
@@ -26,6 +28,7 @@ function Movie({ addToSavedList }) {
     return <div>Loading movie information...</div>;
   }
 
+
   return (
     <div className='save-wrapper'>
       <MovieCard movie={movie} />
@@ -33,6 +36,9 @@ function Movie({ addToSavedList }) {
       <div className='save-button' onClick={saveMovie}>
         Save
       </div>
+      <Link to={`/update-movie/${id}`} >
+        <Button >Update</Button>
+      </Link>
     </div>
   );
 }
