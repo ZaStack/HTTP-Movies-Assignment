@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams, Redirect } from 'react-router-dom';
-import { Formik, Form, useField } from 'formik';
+import { Formik, Form, useField, FieldArray, Field } from 'formik';
 import { Button } from '@material-ui/core';
 import axios from 'axios';
 
@@ -19,13 +19,13 @@ const TextInput = ({ label, ...props }) => {
 };
 
 const UpdateMovie = props => {
-    // const [movie, setMovie ] = useState({
-    //     id: '',
-    //     title: '',
-    //     director: '',
-    //     metascore: '',
-    //     stars: []
-    // })
+    const [editMovie, setEditMovie] = useState({
+        id: '',
+        title: '',
+        director: '',
+        metascore: '',
+        stars: []
+    });
     const { id } = useParams();
     const [toNext, setToNext] = useState(false);
 
@@ -43,14 +43,13 @@ const UpdateMovie = props => {
     return (
         <div className='form-wrapper'>
             <h1>Update Movie</h1>
-
             <Formik
                 initialValues={{
                     id: `${id}`,
                     title: props.title,
                     director: props.director,
                     metascore: props.metascore,
-                    stars: props.stars
+                    stars: [props.stars]
                 }}
                 onSubmit={values => {
                     console.log('Values', values);
@@ -61,9 +60,9 @@ const UpdateMovie = props => {
                             setToNext(true);
                         })
                         .catch(err => console.log(`Submit failure, ${err}`));
-                }}>
-                {({ errors, handleChange, touched, values }) => (
-                    <Form key={props.id}>
+                }}
+                render={({ errors, handleChange, touched, values }) => (
+                    <Form>
                         {toNext ? <Redirect to={`/movies/${id}`} /> : null}
                         <TextInput
                             error={errors.title && touched.title}
@@ -86,13 +85,29 @@ const UpdateMovie = props => {
                             type='number'
                             onChange={handleChange}
                         />
-                        <TextInput
-                            error={errors.stars && touched.stars}
-                            label='Stars'
-                            name='stars'
-                            type='text'
-                            onChange={handleChange}
-                        />
+                        <Form>
+                            <FieldArray
+                                name='stars'
+                                render={arrayHelpers => (
+                                    <div>
+                                        {values.stars.map((star, index) => (
+                                            <div key={index}>
+                                                <Field
+                                                    name={`stars[${index}]`}
+                                                />
+                                            </div>
+                                        ))}
+                                        <button
+                                            type='button'
+                                            onClick={() =>
+                                                arrayHelpers.push({})
+                                            }>
+                                            Add Star
+                                        </button>
+                                    </div>
+                                )}
+                            />
+                        </Form>{' '}
                         <Button
                             type='submit'
                             variant='contained'
@@ -101,7 +116,7 @@ const UpdateMovie = props => {
                         </Button>
                     </Form>
                 )}
-            </Formik>
+            />
         </div>
     );
 };
