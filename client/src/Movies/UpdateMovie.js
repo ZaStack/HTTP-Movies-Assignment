@@ -19,26 +19,15 @@ const TextInput = ({ label, ...props }) => {
 };
 
 const UpdateMovie = props => {
-    const [editMovie, setEditMovie] = useState({
-        id: '',
-        title: '',
-        director: '',
-        metascore: '',
-        stars: []
-    });
+    // const [editMovie, setEditMovie] = useState({
+    //     id: '',
+    //     title: '',
+    //     director: '',
+    //     metascore: '',
+    //     stars: []
+    // });
     const { id } = useParams();
     const [toNext, setToNext] = useState(false);
-
-    // const handleChange = e => {
-    //     let value = e.target.value;
-    //     if (e.target.name === 'stars') {
-    //         value = [value]
-    //     }
-    //     setMovie({
-    //         ...movie,
-    //         [e.target.name]: e.target.value
-    //     })
-    // }
 
     return (
         <div className='form-wrapper'>
@@ -90,7 +79,7 @@ const UpdateMovie = props => {
                                 name='stars'
                                 render={arrayHelpers => (
                                     <div>
-                                        {values.stars.map((star, index) => (
+                                        {values.stars.map((index) => (
                                             <div key={index}>
                                                 <Field
                                                     name={`stars[${index}]`}
